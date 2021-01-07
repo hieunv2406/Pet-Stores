@@ -96,16 +96,16 @@ public class MemberRepositoryImpl extends BaseRepository implements MemberReposi
         Map<String, Object> parameter = new HashMap<>();
         String sql = getSQLFromFile("member", "getDatatableMember");
         if (memberDTO != null) {
-            if (!DataUtil.isNullOrEmpty(memberDTO.getUsername())) {
-                sql += " And lower(m.username) Like lower(:username) ";
-                parameter.put("username", DataUtil.convertSqlLike(memberDTO.getUsername()));
-            }
-            if (!DataUtil.isNullOrEmpty(memberDTO.getFullName())) {
-                sql += " And lower(m.full_name) Like lower(:fullName) ";
-                parameter.put("fullName", DataUtil.convertSqlLike(memberDTO.getFullName()));
-            }
+//            if (!DataUtil.isNullOrEmpty(memberDTO.getUsername())) {
+//                sql += " And lower(m.username) Like lower(:username) ";
+//                parameter.put("username", DataUtil.convertSqlLike(memberDTO.getUsername()));
+//            }
+//            if (!DataUtil.isNullOrEmpty(memberDTO.getFullName())) {
+//                sql += " And lower(m.full_name) Like lower(:fullName) ";
+//                parameter.put("fullName", DataUtil.convertSqlLike(memberDTO.getFullName()));
+//            }
         }
-        sql += " ORDER BY m.username ASC ";
+        sql += " ORDER BY m.hoten ASC ";
         baseDTO.setSqlQuery(sql);
         baseDTO.setParameters(parameter);
         return baseDTO;

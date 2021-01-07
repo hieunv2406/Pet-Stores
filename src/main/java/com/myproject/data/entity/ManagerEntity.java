@@ -1,6 +1,6 @@
 package com.myproject.data.entity;
 
-import com.myproject.data.dto.MemberDTO;
+import com.myproject.data.dto.ManagerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,14 +16,14 @@ import java.util.Date;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "MEMBER")
-public class MemberEntity implements Serializable {
+@Table(name = "MANAGER")
+public class ManagerEntity implements Serializable {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = Constant.SEQUENCE_KEY.EMPLOYEE)
 //    @SequenceGenerator(name = Constant.SEQUENCE_KEY.EMPLOYEE, sequenceName = "SEQUENCE", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idkhachhang")
-    private Long userId;
+    @Column(name = "idnguoiquantri")
+    private Long managerId;
 
     @Column(name = "password")
     private String password;
@@ -37,24 +37,32 @@ public class MemberEntity implements Serializable {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "cccd")
+    private String identityCard;
+
     @Column(name = "ngaysinh")
     private Date dateOfBirth;
 
     @Column(name = "diachi")
     private String address;
 
+    @Column(name = "chucvu")
+    private String roleCode;
+
     @Column(name = "trangthai")
     private String status;
 
-    public MemberDTO toDto() {
-        return new MemberDTO(
-                userId,
+    public ManagerDTO toDto() {
+        return new ManagerDTO(
+                managerId,
                 password,
                 fullName,
                 phoneNumber,
                 email,
+                identityCard,
                 dateOfBirth,
                 address,
+                roleCode,
                 status
         );
     }
