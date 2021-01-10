@@ -46,7 +46,7 @@ public class PostsEntity implements Serializable {
     @Column(name = "hinhanh")
     private String picture;
 
-    @Column(name = "STATUS")
+    @Column(name = "trangthai")
     private String status;
 
     public PostsDTO toDto() {

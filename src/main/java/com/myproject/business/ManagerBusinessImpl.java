@@ -2,7 +2,9 @@ package com.myproject.business;
 
 import com.myproject.common.dto.Datatable;
 import com.myproject.common.dto.ResultInsideDTO;
-import com.myproject.data.dto.MemberDTO;
+import com.myproject.common.utils.DataUtil;
+import com.myproject.data.dto.ManagerDTO;
+import com.myproject.repository.ManagerRepository;
 import com.myproject.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,16 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class MemberBusinessImpl implements MemberBusiness {
+public class ManagerBusinessImpl implements ManagerBusiness {
+    @Autowired
+    private ManagerRepository managerRepository;
     @Autowired
     private MemberRepository memberRepository;
 
     @Override
-    public MemberDTO findMemberById(Long userId) {
-        log.info("findMemberById", userId);
-        return memberRepository.findMemberById(userId);
+    public ManagerDTO findManagerById(Long managerId) {
+        log.info("findManagerById", managerId);
+        return managerRepository.findManagerById(managerId);
     }
 
 //    @Override
@@ -32,16 +36,26 @@ public class MemberBusinessImpl implements MemberBusiness {
 //        return memberRepository.updateMemberInfo(memberDTO);
 //    }
 //
-//    @Override
-//    public ResultInsideDTO deleteEmployeeById(Long employeeId) {
-//        log.info("deleteEmployeeById", employeeId);
-//        return employeeRepository.deleteEmployeeById(employeeId);
-//    }
+    @Override
+    public ResultInsideDTO deleteById(String checkInputSearch, Long managerId) {
+        log.info("deleteManagerById", managerId);
+        if (!DataUtil.isNullOrEmpty(checkInputSearch) && "1".equals(checkInputSearch)) {
+            return managerRepository.deleteManagerById(managerId);
+        }
+        return memberRepository.deleteMemberById(managerId);
+    }
 
     @Override
-    public Datatable getDatatableMember(MemberDTO memberDTO) {
-        log.info("getDatatableMember", memberDTO);
-        return memberRepository.getDatatableMember(memberDTO);
+    public Datatable getDatatable(ManagerDTO managerDTO) {
+        log.info("getDatatable", managerDTO);
+        if (!DataUtil.isNullOrEmpty(managerDTO)) {
+            if (!DataUtil.isNullOrEmpty(managerDTO.getCheckInputSearch()) && "1".equals(managerDTO.getCheckInputSearch())) {
+                return managerRepository.getDatatableManager(managerDTO);
+            } else {
+                return memberRepository.getDatatable(managerDTO);
+            }
+        }
+        return new Datatable();
     }
 
 //    @Override

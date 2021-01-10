@@ -28,6 +28,7 @@ public class ManagerDTO extends BaseDTO {
     private String status;
 
     private String statusStr;
+    private String checkInputSearch;
 
     public ManagerDTO(Long managerId,
                       String password,

@@ -7,8 +7,7 @@ import com.myproject.common.dto.ResultInsideDTO;
 import com.myproject.common.repository.BaseRepository;
 import com.myproject.common.utils.DataUtil;
 import com.myproject.data.dto.ManagerDTO;
-import com.myproject.data.dto.MemberDTO;
-import com.myproject.data.entity.MemberEntity;
+import com.myproject.data.entity.ManagerEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +16,14 @@ import java.util.Map;
 
 @Transactional
 @Repository
-public class MemberRepositoryImpl extends BaseRepository implements MemberRepository {
+public class ManagerRepositoryImpl extends BaseRepository implements ManagerRepository {
 
 
     @Override
-    public MemberDTO findMemberById(Long userId) {
-        MemberEntity memberEntity = getEntityManager().find(MemberEntity.class, userId);
-        MemberDTO memberDTO = memberEntity.toDto();
-        return memberDTO;
+    public ManagerDTO findManagerById(Long managerId) {
+        ManagerEntity managerEntity = getEntityManager().find(ManagerEntity.class, managerId);
+        ManagerDTO managerDTO = managerEntity.toDto();
+        return managerDTO;
     }
 
     //    @Override
@@ -51,29 +50,20 @@ public class MemberRepositoryImpl extends BaseRepository implements MemberReposi
 //    }
 //
     @Override
-    public ResultInsideDTO deleteMemberById(Long userId) {
+    public ResultInsideDTO deleteManagerById(Long managerId) {
         ResultInsideDTO resultInsideDTO = new ResultInsideDTO();
         resultInsideDTO.setKey(Constant.RESPONSE_KEY.SUCCESS);
-        MemberEntity memberEntity = getEntityManager().find(MemberEntity.class, userId);
-        getEntityManager().remove(memberEntity);
+        ManagerEntity managerEntity = getEntityManager().find(ManagerEntity.class, managerId);
+        getEntityManager().remove(managerEntity);
         return resultInsideDTO;
     }
 
     @Override
-    public Datatable getDatatableMember(MemberDTO memberDTO) {
-        BaseDTO baseDTO = sqlSearch(memberDTO);
-        return getListDataTableBySqlQuery(baseDTO.getSqlQuery(),
-                baseDTO.getParameters(), memberDTO.getPage(), memberDTO.getPageSize(),
-                MemberDTO.class,
-                memberDTO.getSortName(), memberDTO.getSortType());
-    }
-
-    @Override
-    public Datatable getDatatable(ManagerDTO managerDTO) {
+    public Datatable getDatatableManager(ManagerDTO managerDTO) {
         BaseDTO baseDTO = sqlSearch(managerDTO);
         return getListDataTableBySqlQuery(baseDTO.getSqlQuery(),
                 baseDTO.getParameters(), managerDTO.getPage(), managerDTO.getPageSize(),
-                MemberDTO.class,
+                ManagerDTO.class,
                 managerDTO.getSortName(), managerDTO.getSortType());
     }
 
@@ -104,27 +94,11 @@ public class MemberRepositoryImpl extends BaseRepository implements MemberReposi
     private BaseDTO sqlSearch(ManagerDTO managerDTO) {
         BaseDTO baseDTO = new BaseDTO();
         Map<String, Object> parameter = new HashMap<>();
-        String sql = getSQLFromFile("member", "getDatatableMember");
+        String sql = getSQLFromFile("manager", "getDatatableManager");
         if (managerDTO != null) {
             if (!DataUtil.isNullOrEmpty(managerDTO.getSearchAll())) {
                 sql += " And (lower(m.email) Like lower(:searchAll) OR lower(m.hoten) Like lower(:searchAll)) ";
                 parameter.put("searchAll", DataUtil.convertSqlLike(managerDTO.getSearchAll()));
-            }
-        }
-        sql += " ORDER BY m.hoten ASC ";
-        baseDTO.setSqlQuery(sql);
-        baseDTO.setParameters(parameter);
-        return baseDTO;
-    }
-
-    private BaseDTO sqlSearch(MemberDTO memberDTO) {
-        BaseDTO baseDTO = new BaseDTO();
-        Map<String, Object> parameter = new HashMap<>();
-        String sql = getSQLFromFile("member", "getDatatableMember");
-        if (memberDTO != null) {
-            if (!DataUtil.isNullOrEmpty(memberDTO.getSearchAll())) {
-                sql += " And (lower(m.email) Like lower(:searchAll) OR lower(m.hoten) Like lower(:searchAll)) ";
-                parameter.put("searchAll", DataUtil.convertSqlLike(memberDTO.getSearchAll()));
             }
         }
         sql += " ORDER BY m.hoten ASC ";

@@ -1,8 +1,10 @@
 package com.myproject.common.controller;
 
 import com.myproject.business.EmployeeBusiness;
+import com.myproject.business.PetBusiness;
 import com.myproject.common.service.FilesStorageService;
 import com.myproject.data.dto.EmployeeDTO;
+import com.myproject.data.dto.PetDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -29,6 +31,8 @@ public class ExportController {
     private ServletContext servletContext;
     @Autowired
     private EmployeeBusiness employeeBusiness;
+    @Autowired
+    private PetBusiness petBusiness;
 
     @GetMapping("/files/{key}")
     public ResponseEntity<Resource> getFile(@PathVariable("key") String key) throws Exception {
@@ -37,6 +41,10 @@ public class ExportController {
             case "EMPLOYEE_MANAGER":
                 EmployeeDTO employeeDTO = new EmployeeDTO();
                 file = employeeBusiness.exportData(employeeDTO);
+                break;
+            case "PET_MANAGER_REPORT":
+                PetDTO petDTO = new PetDTO();
+                file = petBusiness.exportData(petDTO);
                 break;
             default:
         }

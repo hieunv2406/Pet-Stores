@@ -1,7 +1,10 @@
 package com.myproject.controller;
 
+import com.myproject.business.ManagerBusiness;
 import com.myproject.business.MemberBusiness;
 import com.myproject.common.dto.Datatable;
+import com.myproject.common.dto.ResultInsideDTO;
+import com.myproject.data.dto.ManagerDTO;
 import com.myproject.data.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,21 +13,23 @@ import org.springframework.web.bind.annotation.*;
 
 //@CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping(value = "/mapi/memberController")
-public class MemberController {
+@RequestMapping(value = "/mapi/managerController")
+public class ManagerController {
     @Autowired
-    MemberBusiness memberBusiness;
+    ManagerBusiness managerBusiness;
 
-    @PostMapping(value = "/getDatatableMember")
-    public ResponseEntity<Datatable> getDatatableMember(@RequestBody MemberDTO memberDTO) {
-        Datatable datatable = memberBusiness.getDatatableMember(memberDTO);
+    //1: truyền page, pagesize, searchAll
+    //2: tạo 1 nút chọn tìm nhân viên, nếu chọn thì truyền vào checkInputSearch = 1
+    @PostMapping(value = "/getDatatable")
+    public ResponseEntity<Datatable> getDatatable(@RequestBody ManagerDTO managerDTO) {
+        Datatable datatable = managerBusiness.getDatatable(managerDTO);
         return new ResponseEntity<>(datatable, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getDetail")
-    public ResponseEntity<MemberDTO> findMemberById(@RequestParam Long userId) {
-        MemberDTO memberDTO = memberBusiness.findMemberById(userId);
-        return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+        @GetMapping(value = "/getDetail")
+    public ResponseEntity<ManagerDTO> findManagerById(@RequestParam Long managerId) {
+        ManagerDTO managerDTO = managerBusiness.findManagerById(managerId);
+        return new ResponseEntity<>(managerDTO, HttpStatus.OK);
     }
 //
 //    @PostMapping(value = "/insert")
@@ -39,11 +44,13 @@ public class MemberController {
 //        return new ResponseEntity<>(resultInsideDTO, HttpStatus.OK);
 //    }
 //
-//    @GetMapping(value = "/delete")
-//    public ResponseEntity<ResultInsideDTO> deleteEmployeeById(@RequestParam Long employeeId) {
-//        ResultInsideDTO resultInsideDTO = employeeBusiness.deleteEmployeeById(employeeId);
-//        return new ResponseEntity<>(resultInsideDTO, HttpStatus.OK);
-//    }
+    //1: truyền id bên ngoài vào
+    //2: truyền checkInputSearch = 1 nếu chọn như trên màn search
+    @GetMapping(value = "/delete")
+    public ResponseEntity<ResultInsideDTO> deleteById(@RequestParam String checkInputSearch, @RequestParam Long managerId) {
+        ResultInsideDTO resultInsideDTO = managerBusiness.deleteById(checkInputSearch, managerId);
+        return new ResponseEntity<>(resultInsideDTO, HttpStatus.OK);
+    }
 //
 //    //Test queryForList
 //    @GetMapping(value = "/findAll")
