@@ -1,6 +1,8 @@
 package com.myproject.authentic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.myproject.data.dto.ManagerDTO;
+import com.myproject.data.dto.MemberDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +17,6 @@ import java.util.stream.Collectors;
 @Setter
 public class JwtUserDetails implements UserDetails {
     private Long id;
-    private String username;
     private String email;
     @JsonIgnore
     private String password;
@@ -23,46 +24,45 @@ public class JwtUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-    public JwtUserDetails(Long id, String username, String email, String password,
+    public JwtUserDetails(Long id, String email, String password,
                           Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.username = username;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
     }
 
-    public JwtUserDetails(Long id,
-                          String username,
-                          String token,
-                          Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.token = token;
-        this.authorities = authorities;
-    }
-
-    public JwtUserDetails(long id, String userName, String email, String password, String token,
+    public JwtUserDetails(long id, String email, String password, String token,
                           List<GrantedAuthority> grantedAuthorities) {
 
         this.id = id;
-        this.username = userName;
         this.email = email;
         this.password = password;
         this.token = token;
         this.authorities = grantedAuthorities;
     }
 
-    public static JwtUserDetails build(UserDto userDto) {
-        List<GrantedAuthority> authorities = userDto.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+    public static JwtUserDetails build(ManagerDTO managerDTO) {
+        List<GrantedAuthority> authorities = managerDTO.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
 
         return new JwtUserDetails(
-                userDto.getId(),
-                userDto.getUsername(),
-                userDto.getEmail(),
-                userDto.getPassword(),
+                managerDTO.getManagerId(),
+                managerDTO.getEmail(),
+                managerDTO.getPassword(),
+                authorities);
+    }
+
+    public static JwtUserDetails build(MemberDTO memberDTO) {
+        List<GrantedAuthority> authorities = memberDTO.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
+
+        return new JwtUserDetails(
+                memberDTO.getUserId(),
+                memberDTO.getEmail(),
+                memberDTO.getPassword(),
                 authorities);
     }
 
@@ -79,7 +79,7 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.myproject.authentic.business;
 
 import com.myproject.authentic.model.*;
-import com.myproject.authentic.repository.RolesRepository;
-import com.myproject.authentic.repository.UserRepository;
-import com.myproject.authentic.repository.UserRolesRepository;
+import com.myproject.authentic.repository.*;
+import com.myproject.common.utils.DataUtil;
+import com.myproject.data.dto.ManagerDTO;
+import com.myproject.data.dto.MemberDTO;
+import com.myproject.data.entity.ManagerEntity;
+import com.myproject.data.entity.MemberEntity;
+import com.myproject.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,26 +22,32 @@ import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Autowired
-    private UserRepository userRepository;
+    private MemberAccountRepository memberAccountRepository;
     @Autowired
-    private UserRolesRepository userRolesRepository;
-    @Autowired
-    private RolesRepository rolesRepository;
+    private ManagerAccountRepository managerAccountRepository;
 
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-        UserDto userDto = user.toDTO();
-        Set<RolesDto> rolesDtos = new HashSet<>();
-        List<UserRolesEntity> userRolesEntityList = userRolesRepository.findByUserId(user.getId());
-        for (UserRolesEntity dto : userRolesEntityList) {
-            Optional<RolesEntity> rolesEntity = rolesRepository.findById(dto.getRolesId());
-            rolesDtos.add(rolesEntity.get().toDTO());
+        Set<String> roles = new HashSet<>();
+        Optional<ManagerEntity> manager = managerAccountRepository.findByEmail(username);
+        if (DataUtil.isNullOrEmpty(manager)) {
+            MemberEntity user = memberAccountRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+            MemberDTO memberDTO = user.toDto();
+            roles.add("ROLE_USER");
+            memberDTO.setRoles(roles);
+            return JwtUserDetails.build(memberDTO);
+        } else {
+            ManagerDTO managerDTO = manager.get().toDto();
+            String[] arr = managerDTO.getRoleCode().split(",");
+            for (String role : arr) {
+                roles.add(role);
+            }
+            managerDTO.setRoles(roles);
+            return JwtUserDetails.build(managerDTO);
         }
-        userDto.setRoles(rolesDtos);
-        return JwtUserDetails.build(userDto);
     }
 }

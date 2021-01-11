@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,6 +28,7 @@ public class MemberDTO extends BaseDTO {
     private String status;
 
     private String statusStr;
+    private Set<String> roles = new HashSet<>();
 
     public MemberDTO(Long userId,
                      String password,
@@ -43,6 +46,11 @@ public class MemberDTO extends BaseDTO {
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.status = status;
+    }
+
+    public MemberDTO(String email, String password) {
+        this.password = password;
+        this.email = email;
     }
 
     public MemberEntity toEntity() {

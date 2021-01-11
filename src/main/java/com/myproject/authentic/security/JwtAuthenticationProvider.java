@@ -40,7 +40,7 @@ public class JwtAuthenticationProvider {
         List<String> lstRoles = new ArrayList<>();
         Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken).getBody();
         JwtResponse response = new JwtResponse();
-        response.setUsername(body.getSubject());
+        response.setEmail(body.getSubject());
         response.setId(Long.parseLong((String) body.get("id")));
         lstRoles.add((String) body.get("roles"));
         response.setRoles(lstRoles);

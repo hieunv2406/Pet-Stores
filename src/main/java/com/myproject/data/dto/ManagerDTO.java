@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,6 +31,7 @@ public class ManagerDTO extends BaseDTO {
 
     private String statusStr;
     private String checkInputSearch;
+    private Set<String> roles = new HashSet<>();
 
     public ManagerDTO(Long managerId,
                       String password,

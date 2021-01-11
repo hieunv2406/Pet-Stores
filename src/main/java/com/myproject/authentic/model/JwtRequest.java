@@ -11,9 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtResponse {
-    private String token;
-    private Long id;
+public class JwtRequest {
     private String email;
+    private String password;
     private List<String> roles;
 }
